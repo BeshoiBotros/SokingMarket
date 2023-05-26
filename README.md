@@ -19,5 +19,6 @@ pip install -r requirements.txt
 python manage.py migrate
 python manage.py createsuperuser
 python manage.py runserver
-bash```
+```
+
 5. after doing those steps open browser and  enter that url &#8594; https://127.0.0.1:8080
