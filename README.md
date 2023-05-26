@@ -12,7 +12,7 @@ also user can add item to his cart, make orders and view all products on system
 2. ``` cd <VENV_NAME> ```
 4. activate the Virtual Environment &#8594; ``` ./Scripts/activate ``` if you are using linx &#8594; ``` source bin/activate ```
 ```bash
-5. git clone https://github.com/BeshoiBotros/SokingMarket.git
+5. <span style="color: red;">git</span> clone https://github.com/BeshoiBotros/SokingMarket.git
 6. cd SocingMarket
 7. pip install -r requirements.txt
 8. python manage.py migrate
