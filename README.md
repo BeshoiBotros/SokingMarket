@@ -1,5 +1,5 @@
 # SokingMarket
-SokingMarket is a Backe-End Using <span style="color: red;">Django</span>, Markets Can uses that Project to handle online requests and make a connection between all branches
+SokingMarket is a Backe-End Using Django, Markets Can uses that Project to handle online requests and make a connection between all branches
 
 
 # User
