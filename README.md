@@ -9,7 +9,7 @@ also user can add item to his cart, make orders and view all products on system
 
 # installation
 1. open CMD or terminal and create new Virtual Environment &#8594; python -m venv <VENV_NAME>
-2. ```cd <VENV_NAME>
+2. ```cd <VENV_NAME> ```
 3. activate the Virtual Environment &#8594; Scripts/activate if you are using linx &#8594; source bin/activate
 4. cloning the project &#8594; git clone https://github.com/BeshoiBotros/SokingMarket.git
 5. cd SocingMarket
