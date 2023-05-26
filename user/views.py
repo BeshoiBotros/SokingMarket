@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
+from .pagination import ProductsPagination
 
 class CustomerRegistration(generics.CreateAPIView):
     serializer_class = CustomerRegistrationSerializer
@@ -54,6 +55,7 @@ def createOrder(request, item):
 class ViewItems(generics.ListAPIView):
     serializer_class = ItemSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = ProductsPagination
     queryset = Item.objects.all()
 
 class RetrieveItem(generics.RetrieveAPIView):
