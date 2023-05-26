@@ -9,7 +9,7 @@ also user can add item to his cart, make orders and view all products on system
 
 # installation
 1. open CMD or terminal and create new Virtual Environment &#8594; python -m venv <VENV_NAME>
-2. ```cd <VENV_NAME> ```
+2. ```bash cd <VENV_NAME>
 3. activate the Virtual Environment &#8594; Scripts/activate if you are using linx &#8594; source bin/activate
 ```bash
 5. git clone https://github.com/BeshoiBotros/SokingMarket.git
@@ -17,4 +17,4 @@ also user can add item to his cart, make orders and view all products on system
 7. pip install -r requirements.txt
 8. python manage.py migrate
 9. python manage.py createsuperuser
-10. python manage.py runserver```
+10. python manage.py runserver
