@@ -118,3 +118,25 @@ class PersonalDataSerializer(serializers.Serializer):
                 setattr(instance, attr, value)
         instance.save()
         return instance
+    
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+class ConfirmationPasswordResetSrializer(serializers.Serializer):
+    new_password = serializers.CharField(write_only = True, style={'input_type': 'password'})
+    confirm_new_password = serializers.CharField(write_only = True, style={'input_type': 'password'})
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['confirm_new_password']:
+            raise serializers.ValidationError('password does not match with confirmation password')
+        return attrs
+    
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.Serializer(write_only = True, style={'input_type': 'password'})
+    new_password = serializers.Serializer(write_only = True, style={'input_type': 'password'})
+    confirm_new_password = serializers.Serializer(write_only = True, style={'input_type': 'password'})
+
+    def validate(self, attrs):
+        if attrs['new_password'] != attrs['confirm_new_password']:
+            raise serializers.ValidationError('new password does not match with new password confirmation')
+        return

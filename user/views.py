@@ -1,23 +1,21 @@
 from rest_framework import generics
-from .serializers import CustomerRegistrationSerializer, ProfileSerializer, CartSerializer, OrderSerializer, ItemSerializer, Profile, PersonalDataSerializer
+from .serializers import CustomerRegistrationSerializer, ProfileSerializer, CartSerializer, OrderSerializer, ItemSerializer, Profile, PersonalDataSerializer, ResetPasswordSerializer, ConfirmationPasswordResetSrializer, ChangePasswordSerializer
 from .models import Customer, Cart, Order, Item
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from .pagination import ProductsPagination
+from rest_framework.views import APIView
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from rest_framework import status
+from django.contrib.auth.hashers import make_password
 
 class CustomerRegistration(generics.CreateAPIView):
     serializer_class = CustomerRegistrationSerializer
     queryset = Customer.objects.all()
 
-    def perform_create(self, serializer):
-        customer = serializer.save()
-        profile_data = {'user' : customer.id}
-        profile_serializer = ProfileSerializer(data=profile_data)
-        profile_serializer.is_valid(raise_exception=True)
-        profile_serializer.save()
-        return customer
 
 @csrf_exempt
 @api_view(['POST'])
@@ -79,3 +77,63 @@ class RetrievePersonalData(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+
+class ResetPasswordView(APIView):
+    def post(self, request):
+        serializer = ResetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            try:
+                user = Customer.objects.get(email=email)
+            except Customer.DoesNotExist:
+                return Response({'msg' : 'user Does not Exist'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            token = default_token_generator.make_token(user)
+            reset_password_url = f'http://127.0.0.1:8000/customer/reset-password/confirm/{user.id}/{token}/'
+
+            send_mail(
+                'Reset Your Password',
+                f'Click the following link to reset your password: {reset_password_url} your mother F***** B****',
+                'beshoibotros111@gmail.com',
+                [email],
+                fail_silently=False,
+                
+            )
+
+            return Response({'msg' : 'we will send password reset link for you now'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ConfirmPasswordReset(APIView):
+    def post(self, request, user_id, token):
+        try:
+            user = Customer.objects.get(id=user_id)
+        except Customer.DoesNotExist:
+            return Response({'msg' : 'User does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if default_token_generator.check_token(user, token):
+            serializer = ConfirmationPasswordResetSrializer(data=request.data)
+            if serializer.is_valid():
+                password = serializer.validated_data['new_password']
+                user.password = make_password(password)
+                user.save()
+                return Response({'msg' : 'the password has been reseted successfully'})
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'error': 'Invalid reset token.'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChangePassword(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            old_password = serializer.validated_data['old_password']
+            new_password = serializer.validated_data['new_password']
+            if not request.user.check_password(old_password):
+                return Response({'msg' : 'inavlid password!'}, status=status.HTTP_400_BAD_REQUEST)
+            request.user.password = make_password(new_password)
+            request.user.save()
+            return Response({'msg' : 'password changed successfuly'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

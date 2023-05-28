@@ -10,6 +10,9 @@ urlpatterns = [
     path('customer/view-products/', views.ViewItems.as_view(), name='view_items'),
     path('customer/view-product/<int:pk>/', views.RetrieveItem.as_view(), name='view_item'),
     path('customer/profile/', views.RetrieveProfile.as_view(), name='retrieve_profile'), 
-    path('customer/personal-info/', views.RetrievePersonalData.as_view(), name='personal_info')
+    path('customer/personal-info/', views.RetrievePersonalData.as_view(), name='personal_info'),
+    path('customer/reset-password/', views.ResetPasswordView.as_view(), name='reset_password'),
+    path('customer/reset-password/confirm/<int:user_id>/<str:token>/', views.ConfirmPasswordReset.as_view(), name='confirm_password_reset'),
+    
 ]
 
